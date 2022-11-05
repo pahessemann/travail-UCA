@@ -20,11 +20,41 @@ float* creatab1D(int n)                               //Cette fonction va permet
 
 
 
-    for (int i = 0; i < n; i++)
+    /*for (int i = 0; i < n; i++)
     {
         printf("%f \t", tab[i]);                                    // On libère la mémoire allouée avec malloc, on n'en a plus besoin
     }
+    */
     return tab;
+}
+
+
+
+float** creatab2D(int ligne, int colonne)                               //Fonction qui permet de crée et d'alloué un Tableau a deux dimensions
+{                                                                       // En paramètre on recoit le nombre de lignes et de colonnes
+    float** Tableau = NULL;                                             // le malloc alloue la mémoire nécessaire par rapport au type de variable utilisé et le nombre de ligne
+    Tableau = malloc(sizeof(float*) * ligne);                           // en cas d'erreur de l'allocations le programme s'arrête
+
+    if (Tableau == NULL)
+    {
+        return NULL;
+    }
+
+    for (int i = 0; i < ligne; i++)
+    {
+        Tableau[i] = malloc(sizeof(float) * colonne);
+
+        if (Tableau[i] == NULL)
+        {
+            for (int j = 0; j < i; j++)
+            {
+                free(Tableau[j]);
+            }
+            free(Tableau);
+            return NULL;
+        }
+    }
+    return Tableau;
 }
 
 
@@ -188,6 +218,107 @@ void remplissage_matrice_exo(float* tab, float* tab2, int d)
 }
 
 
+float * produit_polynome(float* A, float* B, int nb_reso ,int n)
+{
+    float* produit = creatab1D(nb_reso);
+    for (int i = 0; i < n; i++)
+    {
+        produit[i] = 0;
+    }
+
+
+    for (int i = 0; i < n; i++)                 // n opérations pour n lignes
+    {
+        for (int j = 0 ; j <n ; j++ )
+        {
+            for (int k = 0; k < j; k++)
+            {
+                produit[k] = produit[k] + A[k] * B[j];
+            }
+        }
+    }
+    return produit;
+}
+
+void interpolation_Neville(float* A, float* B, float* solution, int n)
+{
+    int nb_it;
+    nb_it = n - 1;
+    
+    float** neville;
+    neville = creatab2D(nb_it, n);
+
+
+
+    for (int i = 0; i < n; i++)
+    {
+        neville[1][i] = B[i];
+    }
+    for (int i = 0; i < nb_it ; i++)
+    {
+        int repere = 1 ;
+        int nb_case;
+        nb_case = nb_it;
+        for (int j = 0 ; j < nb_case ; j++)
+        {
+            float* c;
+            float* d;
+            c = creatab1D(n);
+            d = creatab1D(n);
+
+            c[1] = 1 ;
+            d[1] = -1;
+
+            c[0] = -A[j + repere];
+            d[0] = A[j];
+
+
+            float* tab1;
+            float* tab2;
+            tab1 = creatab1D(n);
+            tab2 = creatab1D(n);
+
+            for (int k = 0; k < n; k++)
+            {
+                tab1[k] = neville[j][k];
+                tab2[k] = neville[j + 1][k];
+            }
+            
+            tab1 = produit_polynome(c, tab1, n, n);
+            tab2 = produit_polynome(d, tab2, n, n);
+
+            for (int k = 0; k < n; k++)
+            {
+                tab1[k] = tab1[k] + tab2[k];
+            }
+
+            float diviseur; 
+            diviseur = A[j] - A[j + 1];
+
+            for (int k = 0; k < n; k++)
+            {
+                tab1[k] = tab1[k]/diviseur;
+            }
+
+            for (int k = 0; k < n; k++)
+            {
+                neville[j][k] = tab1[k] ;
+            }
+
+            nb_case = nb_case - 1;
+        }
+    }
+    
+
+    for (int k = 0; k < n; k++)
+    {
+        solution[k] = neville[nb_it][k];
+    }
+}
+
+
+
+
 int main()
 {
     int nb_colonne;
@@ -213,8 +344,21 @@ int main()
 
     affiche_tab(tab_y, nb_colonne);
 
+    
+    float* solution;
+    solution = creatab1D(nb_colonne);
+    interpolation_Neville(tab_x, tab_y, solution, nb_colonne);
+    printf("Solution des différents de coefficient pour x en fonction de son degré : \n");
+    affiche_tab(solution, nb_colonne);
+
     free(tab_x);
     free(tab_y);
+
+
+
+    printf("Fin de programme"); //Section afin d'avoir l'affichage dans l'executable jusqu'à la fin du programme
+    int fin_prog;
+    scanf("%d", &fin_prog);
 
 
 
