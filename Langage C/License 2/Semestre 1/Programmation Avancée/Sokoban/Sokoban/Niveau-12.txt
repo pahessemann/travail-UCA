@@ -1,0 +1,19 @@
+13
+16
+34
+  #########  
+  #BIB#BIB#  
+  #IBIBIBI#  
+  #BIBIBIB#  
+  #IBIBIBI#  
+  #BIBIBIB#  
+  ###   ###  
+    #   #    
+###### ######
+#           #
+# C C C C C #
+## C C C C ##
+ #C C C C C# 
+ #   CPC   # 
+ #  #####  # 
+ ####   #### 

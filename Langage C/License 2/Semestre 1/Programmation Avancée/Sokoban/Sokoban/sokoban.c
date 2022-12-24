@@ -141,7 +141,7 @@ int main() {
     struct game_state state;
 
     // Chargez le niveau à partir du fichier
-    load_level(&state, level_file);
+    //load_level(&state, level_file);
 
     // Fermez le fichier une fois que nous avons terminé
     fclose(level_file);
@@ -149,7 +149,7 @@ int main() {
     // Boucle principale du jeu
     while (1) {
         // Affichez l'état du jeu
-        display_game(&state);
+        //display_game(&state);
 
         // Gérez les entrées du joueur
         deplacement(&state);
@@ -167,6 +167,6 @@ int main() {
 
     liberer_tableau_2d(tableau, n);
 
-    return 0
+    return 0;
 
 }
