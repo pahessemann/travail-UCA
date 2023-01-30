@@ -5,7 +5,7 @@ alphabet = 'abcdefghijklmnopqrstuvwxyz'
 message = input("Ecrivez votre message")
 decalage = int(input("Valeur du decalage?"))
 
-def crypt(mess , z ):
+def crypt(mess , decalage , z ):
     traduction=''
     i=0
     x = 0
@@ -18,6 +18,6 @@ def crypt(mess , z ):
     return (traduction)
 
 
-m = crypt(message , 1)
+m = crypt(message ,decalage, 1)
 print(m)
-print(crypt(m , -1))
+print(crypt(m ,decalage, -1))
